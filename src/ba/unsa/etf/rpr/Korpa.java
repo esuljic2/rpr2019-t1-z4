@@ -1,38 +1,41 @@
 package ba.unsa.etf.rpr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Korpa {
 
-    private List<Artikl> artikli = new ArrayList<>();
+    private Artikl[] artikli = new Artikl[1000];
+    private int brojArtikala = 0;
 
     public boolean dodajArtikl(Artikl a) {
-        if (artikli.size() >= 50)
+        if (brojArtikala >= 50)
             return false;
 
-        artikli.add(a);
+        artikli[brojArtikala++] = a;
         return true;
     }
 
     public Artikl[] getArtikli() {
-        return artikli.toArray(new Artikl[artikli.size()]);
+        return artikli;
     }
 
     public Artikl izbaciArtiklSaKodom(String kod) {
-        for (Artikl artikl : artikli)
-            if (artikl.getKod().equals(kod)) {
-                artikli.remove(artikl);
-                return artikl;
+        for (int i = 0; i < brojArtikala; i++) {
+            if (artikli[i].getKod().equals(kod)) {
+                Artikl a = artikli[i];
+                for (int j = i; j < brojArtikala - 1; j++) {
+                    artikli[j] = artikli[j + 1];
+                }
+                artikli[--brojArtikala] = null;
+                return a;
             }
+        }
 
         return null;
     }
 
     public int dajUkupnuCijenuArtikala() {
         int sum = 0;
-        for (Artikl artikl : artikli)
-            sum += artikl.getCijena();
+        for (int i = 0; i < brojArtikala; i++)
+            sum += artikli[i].getCijena();
 
         return sum;
     }
